@@ -1,0 +1,207 @@
+﻿<Window x:Class="Uprcom1.WindowHelp"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Справка"
+        Topmost="True"
+        Icon="2.ico"
+        Width="530" Height="415"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner">
+    
+    
+    <Grid>
+
+    <!-- Основной контейнер: DockPanel -->
+        <DockPanel Margin="10" LastChildFill="True" x:Name="ContentHelp">
+
+        <!-- Кнопка "Закрыть" прижата к низу -->
+        <Button Content="Закрыть" 
+                Width="80" 
+                HorizontalAlignment="Center"
+                DockPanel.Dock="Bottom" 
+                Margin="0,10,0,0" 
+                Click="CloseButton_Click"
+                ToolTip="Закрыть окно справки"/>
+
+        <!-- Вкладки занимают оставшееся пространство -->
+            <TabControl SelectionChanged="TabControl_SelectionChanged">
+            <!-- Вкладка "О программе" -->
+            <TabItem Header="О программе">
+                <StackPanel Margin="10">
+                    <TextBlock Text="Преобразование файла uprcom.dbf" FontWeight="Bold"/>
+                    <TextBlock Text="Версия 1.0" Margin="0,5,0,0"/>
+                    <TextBlock Margin="0,15,0,0" TextWrapping="Wrap" TextAlignment="Justify">
+                        Программа предназначения для создания из файла uprcom.dbf множества файлов dbf, сгруппированных по поставщикам. Каждая группа записей отсортированная по полю PROVIDER будет записываться в новый файл.
+                        <LineBreak/>
+                        Поставщики с PROVIDER, записанные в файл ignorelist.txt будут пропускаться и не будут обрабатываться.
+                        <LineBreak/>
+                        Переименование файлов происходит согласно списку из файла provider_names.txt.
+                        <LineBreak/>
+                        При включенной опции «Удалять дубликаты записей» в сформированных файлах будут убираться все дубликаты (одинаковые строки, повторяющиеся несколько раз)
+                        <LineBreak/>
+                        При включенной опции «Удалять значение из MONTHDBT» поле MONTHDBT будет полностью очищаться от всех значений.
+                        <LineBreak/>
+                        Подробнее о форматах файлов ignorelist.txt и provider_names.txt смотрите на соотвествующих вкладках справки.
+                    </TextBlock>
+                </StackPanel>
+            </TabItem>
+
+            <!-- Вкладка для ignorelist.txt -->
+            <TabItem Header="Файл ignorelist.txt">
+                <StackPanel Margin="10">
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Text="В файле ignorelist.txt записываются номера поставщиков PROVIDER, которые не будут обрабатыватся и не будут формироваться в отдельный файл."/>
+                    <TextBlock Text="Формат файла:" Margin="0,10,0,5" FontWeight="Bold"/>
+                    <TextBox Text="# Игнорируемые провайдеры&#xA;# Формат: ID_провайдера [ # комментарий ]&#xA;
+                             &#xA;8&#xA;9&#xA;610005001000000465  # Комментарий&#xA;610005001000000434  # Комментарий
+                             &#xA;610005001000000011&#xA;610005001000000004" 
+                        FontFamily="Courier New"
+                        IsReadOnly="True"
+                        Background="LightGray"
+                        BorderThickness="1"
+                        Margin="0,5,0,0"
+                        TextWrapping="Wrap"
+                        AcceptsReturn="True"
+                        VerticalScrollBarVisibility="Auto"
+                        HorizontalScrollBarVisibility="Auto"/>
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Text="&#xA;В тестовом файле пишется номер поставщика в виде числа (из поля PROVIDER) и через символ «#» записываются комментарии, если нужно. Комментарии  можно поместить в любом месте файла, все что идет после # в строке считается комментарием."/>
+                </StackPanel>
+            </TabItem>
+
+            <!-- Вкладка для provider_names.txt -->
+            <TabItem Header="Файл provider__names.txt">
+                <StackPanel Margin="10">
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Text="В файле provider_names.txt записываются соотвествия между id поставщиков (поле PROVIDER) и нужными названиями файлов."/>
+                    <TextBlock Text="Формат файла:" Margin="0,10,0,5" FontWeight="Bold"/>
+                    <TextBox Text="# Сопоставление ID провайдеров и имён файлов&#xA;# Формат: ID_провайдера имя_файла [ # комментарий ]&#xA;
+                                   &#xA;610005001000000988 metallurg  # Металлург TC:&#xA;610005001000000903 raduga_42
+                                   &#xA;610005001000000904 radost_tsg # еще какой-то комментарий&#xA;610005001000000932 sadovod_snt" 
+                        FontFamily="Courier New"
+                        IsReadOnly="True"
+                        Background="LightGray"
+                        BorderThickness="1"
+                        Margin="0,5,0,0"
+                        TextWrapping="Wrap"
+                        AcceptsReturn="True"
+                        VerticalScrollBarVisibility="Auto"
+                        HorizontalScrollBarVisibility="Auto"/>
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Text="&#xA;В тестовом файле пишется номер поставщика в виде числа (из поля PROVIDER), через пробел нужное название файла и также через символ «#» записываются комментарии, если нужно.
+                               &#xA;ВАЖНО! Название файла поставщика должно состоять только из английских строчных букв, цифр и символа подчеркивания «_». Файл должен начинаться только с букв. "/>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="Обновление txt-файлов" x:Name="TxtFilesTab">
+                <Grid>
+                <Grid x:Name="mainContent" Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <!-- Для заголовка -->
+                        <RowDefinition Height="*"/>
+                        <!-- 2-я область -->
+                        <RowDefinition Height="*"/>
+                        <!-- 3-я область -->
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Обновление служебных файлов на основе файла uprcom.dbf" FontWeight="Bold" Grid.Row="0" TextAlignment="Center"/>
+
+                    <!-- Первая прямоугольная область -->
+                    <Border BorderBrush="Gray" BorderThickness="1" Grid.Row="1" Margin="0,10,0,5">
+                        <Grid>
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <TextBlock TextWrapping="Wrap" Text="Дополнить файл provider_names.txt недостающими сопоставлениями.&#xA;Для того чтобы создать файл заново, в который войдут только актуальные сопоставления, установите флажок «Пересоздать файл»." Margin="0,0,0,5" TextAlignment="Justify"/>
+                                    <CheckBox x:Name="ChkRegen" Content="Пересоздать файл сопоставлений" HorizontalAlignment="Center" Margin="0,0,0,5" IsChecked="False" ToolTip="Заново создать файл provider_names.txt с сопоставлениями из файла uprcom.dbf"/>
+                                    <Button x:Name="BtnUpdate" Content="Обновить файл сопоставлений" HorizontalAlignment="Center" Click="BtnUpdate_Click" Width="180"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Вторя прямоугольная область -->
+                    <Border BorderBrush="Gray" BorderThickness="1" Grid.Row="3" Margin="0,5,0,0">
+                        <Grid>
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <TextBlock TextWrapping="Wrap" TextAlignment="Center" Margin="0,0,0,5">
+                                        <Run Text="Отредактировать файл ignorelist.txt, задавая провайдеров, которых необходимо пропустить"/>
+                                        <Run x:Name="DynamicRun" Text=""/>
+                                    </TextBlock>
+                                    <Button x:Name="BtnEditIgnore" Content="Редактирование файла" HorizontalAlignment="Center" Click="BtnEditIgnore_Click" Width="135"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Grid>
+                    <TextBlock x:Name="errorMessage" 
+                   Text="Файл uprcom.dbf не найден. &#xA;Сначала выберите папку, в которой располагается файл uprcom.dbf"
+                   Foreground="Red" 
+                   FontWeight="Bold" 
+                   TextAlignment="Center" 
+                   VerticalAlignment="Center"
+                   Visibility="Collapsed"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+        <Grid x:Name="EditIgnorePanel" 
+              Visibility="Collapsed"
+              Background="{StaticResource {x:Static SystemColors.WindowBrushKey}}">
+
+            <!-- Структура панели -->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!-- Заголовок -->
+                <RowDefinition Height="*"/>
+                <!-- Таблица -->
+                <RowDefinition Height="Auto"/>
+                <!-- Чекбокс и кнопки -->
+            </Grid.RowDefinitions>
+
+            <!-- Заголовок панели -->
+            <TextBlock Text="Редактирование игнорируемых провайдеров" 
+                       FontWeight="Bold"
+                       FontSize="16"
+                       Margin="10,5"
+                       Grid.Row="0"/>
+
+            <!-- Таблица провайдеров -->
+            <DataGrid x:Name="ProvidersDataGrid"
+                      Grid.Row="1"
+                      Margin="10,0,10,10"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      PreviewMouseDown="DataGrid_PreviewMouseDown">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="Пропуск" Width="60" CanUserResize="False">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsIgnored, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Провайдер" Binding="{Binding NameN}" Width="*" MinWidth="200"/>
+                    <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="*" MinWidth="130"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!-- Нижняя панель с настройками -->
+            <StackPanel Grid.Row="2" 
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Margin="10,5,10,10">
+
+                <Button x:Name="BtnApplyIgnoreList" 
+                        Content="Сохранить"
+                        Width="80"
+                        Margin="0,0,75,0"
+                        Click="BtnApplyIgnoreList_Click"/>
+
+                <Button x:Name="BtnCancelEdit" 
+                        Content="Отменить"
+                        Width="80"
+                        Click="BtnCancelEdit_Click"/>
+            </StackPanel>
+        </Grid>
+
+
+    </Grid>
+</Window>
