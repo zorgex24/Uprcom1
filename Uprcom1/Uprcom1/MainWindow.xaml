@@ -1,0 +1,170 @@
+﻿<Window x:Class="Uprcom1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Icon="1.ico"
+        Title="Преобразование DBF"
+        Height="396" Width="472"
+
+      
+    WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResizeWithGrip"
+        Background="{DynamicResource WindowBgBrush}">
+
+    <!-- Корневой макет: шапка + контент -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="38"/>
+            <!-- кастомная шапка -->
+            <RowDefinition Height="*"/>
+            <!-- всё остальное -->
+        </Grid.RowDefinitions>
+
+        <!-- ───── 1. Шапка окна ───── -->
+        <Grid Background="{DynamicResource AccentBrush}"
+              MouseLeftButtonDown="Header_MouseLeftButtonDown">
+
+            <TextBlock Text="{Binding Title, RelativeSource={RelativeSource AncestorType=Window}}"
+                       Margin="12,0,0,0"
+                       VerticalAlignment="Center"
+                       FontWeight="SemiBold"
+                       Foreground="White"/>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Style="{StaticResource MinimizeCaptionStyle}"
+                Click="OnMinimizeClick"/>
+                <Button Style="{StaticResource CloseCaptionStyle}"
+                Click="BtnClose_Click"/>
+            </StackPanel>
+        </Grid>
+        
+        <Grid Grid.Row="1">
+            
+            <!-- Линия 1: заголовок -->
+            <Label Content="Путь к файлу Uprcom.dbf:"
+                   HorizontalAlignment="Left"
+                   Margin="143,10,0,0"
+                   VerticalAlignment="Top"/>
+
+            <!-- Линия 2: метка и путь -->
+            <Label Content="Папка:"
+                   HorizontalAlignment="Left"
+                   Margin="10,42,0,0"
+                   VerticalAlignment="Top"/>
+
+            <Border BorderBrush="Gray"
+                    BorderThickness="1"
+                    Background="White"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Margin="60,43,0,0"
+                    Width="348"
+                    Height="22">
+                <TextBlock x:Name="txtboxPath"
+                           Text="Путь не выбран"
+                           VerticalAlignment="Center"
+                           Margin="2,0"
+                           ToolTip="{Binding Text, RelativeSource={RelativeSource Self},
+                                            FallbackValue='Путь не выбран'}"/>
+            </Border>
+
+            <!-- Кнопки действия -->
+            <Button x:Name="btnSelectedFile"
+                    Content="Выбор папки"
+                    HorizontalAlignment="Left"
+                    Margin="100,123,0,0"
+                    VerticalAlignment="Top"
+                    Width="105"
+                    Height="20"
+                    Click="BtnSelectFile_Click"
+                    ToolTip="Выбрать папку, в которой находится файл uprcom.dbf"/>
+
+            <Button x:Name="btnStart"
+                    Content="Обработать файл"
+                    HorizontalAlignment="Left"
+                    Height="20"
+                    Margin="249,123,0,0"
+                    VerticalAlignment="Top"
+                    Width="105"
+                    Click="BtnStart_Click"
+                    ToolTip="Запустить обработку файла uprcom.dbf"/>
+
+            <!-- Нижние кнопки -->
+            <Button x:Name="BtnClose"
+                    Content="Закрыть"
+                    HorizontalAlignment="Right"
+                    Height="20"
+                    Margin="0,0,10,10"
+                    VerticalAlignment="Bottom"
+                    Width="80"
+                    Click="BtnClose_Click"
+                    ToolTip="Закрыть программу"/>
+
+            <Button x:Name="BtnHelp"
+                    Content="Справка"
+                    HorizontalAlignment="Left"
+                    Height="20"
+                    Margin="10,0,0,10"
+                    VerticalAlignment="Bottom"
+                    Width="80"
+                    Click="BtnHelp_Click"
+                    ToolTip="Открыть справочную информацию"/>
+
+            <!-- Ошибки / предупреждения -->
+            <Label x:Name="lblWarning"
+                   Content="Файл Uprcom.dbf в папке не обнаружен!"
+                   HorizontalAlignment="Center"
+                   Height="26"
+                   Margin="0,76,0,0"
+                   VerticalAlignment="Top"
+                   Foreground="Red"/>
+
+            <Label x:Name="LblFileIgnoreError"
+                   Content="Файл ignorelist.txt в папке с программой не обнаружен!"
+                   HorizontalAlignment="Center"
+                   Height="26"
+                   Margin="0,154,0,0"
+                   VerticalAlignment="Top"
+                   Foreground="Red"/>
+
+            <Label x:Name="LblFileNamesError"
+                   Content="Файл provider__names.txt в папке с программой не обнаружен!"
+                   HorizontalAlignment="Center"
+                   Height="26"
+                   Margin="0,183,0,0"
+                   VerticalAlignment="Top"
+                   Foreground="Red"/>
+
+            <!-- Чек-боксы -->
+            <CheckBox x:Name="ChkDuplicate"
+                      Content="Удалять дубликаты записей"
+                      HorizontalAlignment="Left"
+                      Margin="143,222,0,0"
+                      VerticalAlignment="Top"
+                      Height="16"
+                      IsChecked="True"
+                      ToolTip="Удалять дубликаты записей в сформированных файлах dbf"/>
+
+            <CheckBox x:Name="chkClearMonthdbt"
+                      Content="Удалять значение из MONTHDBT"
+                      HorizontalAlignment="Left"
+                      Margin="143,248,0,0"
+                      VerticalAlignment="Top"
+                      Height="16"
+                      IsChecked="True"
+                      ToolTip="Очищать поле MONTHDBT в сформированных файлах dbf"/>
+
+            <!-- Подпись -->
+            <Label Content="Программу создал&#x0A;Альков Ренат&#x0A;© 2025"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,10"
+                   VerticalAlignment="Bottom"
+                   HorizontalContentAlignment="Center"
+                   VerticalContentAlignment="Center"
+                   TextBlock.TextAlignment="Center"/>
+        </Grid>
+    </Grid>
+</Window>

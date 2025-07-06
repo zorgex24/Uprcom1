@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Forms;
 using MessageBox = System.Windows.MessageBox;
+using System.Windows.Input;
 
 
 namespace Uprcom1
@@ -291,5 +292,15 @@ namespace Uprcom1
         }
 
 
+        private void Header_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ButtonState == MouseButtonState.Pressed)
+                DragMove();           // встроенный метод Window для перетаскивания
+        }
+
+        private void OnMinimizeClick(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
     }
 }

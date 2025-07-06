@@ -1,0 +1,149 @@
+﻿<!-- ModernPalette.xaml -->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Базовые цвета -->
+    <Color x:Key="AccentColor">#FF0078D7</Color>
+    <Color x:Key="AccentColorLight">#FF3399FF</Color>
+    <!-- на ~20 % светлее -->
+    <Color x:Key="WindowBg">#FFF7F7F7</Color>
+    <Color x:Key="ControlBg">White</Color>
+    <Color x:Key="ControlBorder">#19000000</Color>
+    <Color x:Key="TextPrimary">#FF222222</Color>
+
+    <!-- Кисти -->
+    <SolidColorBrush x:Key="AccentBrush"        Color="{StaticResource AccentColor}"/>
+    <SolidColorBrush x:Key="AccentBrushLight"   Color="{StaticResource AccentColorLight}"/>
+    <SolidColorBrush x:Key="WindowBgBrush"      Color="{StaticResource WindowBg}"/>
+    <SolidColorBrush x:Key="TextBrush"          Color="{StaticResource TextPrimary}"/>
+
+    <!-- Шрифт по-умолчанию -->
+    <Style x:Key="BaseCaptionStyle" TargetType="Button">
+        <Setter Property="Width"        Value="46"/>
+        <Setter Property="Background"   Value="Transparent"/>
+        <Setter Property="BorderBrush"  Value="Transparent"/>
+        <Setter Property="Foreground"   Value="White"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="root" Background="{TemplateBinding Background}">
+                        <!-- здесь, в дочерних стилях, подставим Path -->
+                        <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="root"
+                                Property="Background"
+                                Value="{DynamicResource AccentBrushLight}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="root" Property="Opacity" Value="0.7"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="TextBlock">
+        <Setter Property="FontFamily"  Value="Microsoft Sans Serif"/>
+        <Setter Property="Foreground"  Value="{StaticResource TextBrush}"/>
+        <Setter Property="FontSize"    Value="12"/>
+    </Style>
+
+    <Style TargetType="Control">
+        <Setter Property="FontFamily" Value="Microsoft Sans Serif"/>
+    </Style>
+
+    <LinearGradientBrush x:Key="BtnNormalBrush"  StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#FFFDFDFD" Offset="0"/>
+        <GradientStop Color="#FFE4E4E4" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Hover (слегка подсвечиваем) -->
+    <LinearGradientBrush x:Key="BtnHoverBrush"   StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#FFFFFFFF" Offset="0"/>
+        <GradientStop Color="#FFEBEBEB" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Pressed (обратный градиент — кажется «утопленной») -->
+    <LinearGradientBrush x:Key="BtnPressedBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#FFDADADA" Offset="0"/>
+        <GradientStop Color="#FFF9F9F9" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- ───── 3-D кнопка по-умолчанию ───── -->
+    <Style TargetType="Button">
+        <!-- базовые свойства -->
+        <Setter Property="Background"       Value="{StaticResource BtnNormalBrush}"/>
+        <Setter Property="BorderBrush"      Value="#FF828282"/>
+        <Setter Property="BorderThickness"  Value="1"/>
+        <Setter Property="Padding"          Value="10,4"/>
+        <Setter Property="Foreground"       Value="Black"/>
+        <Setter Property="Cursor"           Value="Hand"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+
+        <!-- шаблон, формирующий «объём» -->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="2">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      RecognizesAccessKey="True"/>
+                    </Border>
+
+                    <!-- триггеры для смены кистей -->
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border"
+                                Property="Background"
+                                Value="{StaticResource BtnHoverBrush}"/>
+                        </Trigger>
+
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border"
+                                Property="Background"
+                                Value="{StaticResource BtnPressedBrush}"/>
+                            <Setter TargetName="border"
+                                Property="BorderBrush"
+                                Value="#FF5A5A5A"/>
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ► Иконка «свернуть» -->
+    <Style x:Key="MinimizeCaptionStyle" BasedOn="{StaticResource BaseCaptionStyle}"
+       TargetType="Button">
+        <Setter Property="Content">
+            <Setter.Value>
+                <Path Data="M0,0 L10,0" Stroke="White" StrokeThickness="2"
+                  Stretch="None" SnapsToDevicePixels="True"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ► Иконка «закрыть» -->
+    <Style x:Key="CloseCaptionStyle" BasedOn="{StaticResource BaseCaptionStyle}"
+       TargetType="Button">
+        <Setter Property="Content">
+            <Setter.Value>
+                <Path Data="M0,0 L8,8 M0,8 L8,0" Stroke="White" StrokeThickness="2"
+                  Stretch="None" SnapsToDevicePixels="True"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
