@@ -105,4 +105,18 @@
     <Resource Include="2.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>REM ► объединяем EXE + DLL в один файл
+"%25USERPROFILE%25\.dotnet\tools\ilrepack.exe" ^
+  --out:"$(TargetDir)Uprcom1_Merged.exe" ^
+  --internalize ^
+  "$(TargetPath)" ^
+  "$(TargetDir)UprcomCore.dll" ^
+  "$(TargetDir)DbfParser.dll" ^
+  "$(TargetDir)Newtonsoft.Json.dll"
+
+REM ► (опция) заменяем исходный exe собранным
+copy /Y "$(TargetDir)Uprcom1_Merged.exe" "$(TargetPath)"
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>
